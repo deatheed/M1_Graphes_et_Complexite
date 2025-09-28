@@ -1,0 +1,3 @@
+2 undirected weighted
+1 : 2 // 5.5
+2 : 1 // 5.5

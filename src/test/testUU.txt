@@ -1,0 +1,3 @@
+2 undirected unweighted
+1 : 2
+2 : 1

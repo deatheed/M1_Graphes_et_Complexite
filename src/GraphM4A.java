@@ -240,4 +240,24 @@ public class GraphM4A {
 
         return true;
     }
+
+    public void DFSNum(int i,Numbering num){
+        num.incrNB();
+        num.valD(num.getNB(), i);
+        for(int t=0;t<n;t++){
+            if(adjmat[i][t]==0){
+                DFSNum(t, num);
+            }
+        }
+    }
+
+    public Numbering numbering(){
+        Numbering num = new Numbering(n); 
+        for(int i=0;i<n;i++){
+            if(num.getD()[i]==0){
+                DFSNum(i, num);
+            }
+        }
+        return num;
+    }
 }

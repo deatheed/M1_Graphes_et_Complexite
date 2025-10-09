@@ -1,5 +1,6 @@
 
 import java.util.Scanner;
+import java.util.Stack;
 
 public class GraphM4A {
 
@@ -251,6 +252,14 @@ public class GraphM4A {
         }
     }
 
+    public Numbering DFSNumAll(){
+        Numbering num = new Numbering(n);
+        for (int i = 0; i < this.n; i++) {
+            DFSNum(i, num);
+        }
+        return num;
+    }
+
     public Numbering numbering(){
         Numbering num = new Numbering(n); 
         for(int i=0;i<n;i++){
@@ -259,5 +268,82 @@ public class GraphM4A {
             }
         }
         return num;
+    }
+
+    public Numbering recognizeArc(){
+        Numbering num = this.DFSNumAll();
+        for(int s=0; s<n;s++){
+            for(int t=0; t<n;t++){
+                if(adjmat[s][t] != 0.0){
+                    if(num.getD()[s]<num.getD()[t] && num.getD()[t]<num.getF()[t] && num.getF()[t]<num.getF()[s]){
+                        num.add_ft_arc(s, t);
+                    }
+                    if(num.getD()[t]<num.getD()[s] && num.getD()[s]<num.getF()[s] && num.getF()[s]<num.getF()[t]){
+                        num.add_b_arc(s, t);
+                    }
+                    if(num.getF()[t]<num.getD()[s]){
+                        num.add_c_arc(s, t);
+                    }
+                }
+            }
+        }
+        return num;
+    }
+
+    public boolean DFSCycle(){
+        Numbering num = new Numbering(n);
+        for(int s=0; s<n;s++){
+            if(num.getColors()[s] == "noir"){
+                if(cycle(s, num)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean cycle(int s, Numbering num){
+        num.setColor(s, "rouge");
+        for(int t=0; t<n; t++){
+            if(adjmat[s][t]!= 0.0){
+                if(num.getColors()[t] == "noir"){
+                    cycle(t, num);
+                }
+                if(num.getColors()[t] == "rouge"){
+                    return true;
+                }
+            }
+        }
+        num.setColor(s, "bleu");
+        return false;
+    }
+
+    public Stack<Integer> DFSCycleP(){
+        Numbering num = new Numbering(n);
+        Stack<Integer> p = new Stack<Integer>();
+        for(int s=0; s<n;s++){
+            if(num.getColors()[s] == "noir"){
+                cycleP(s,num,p);
+                return p;
+            }
+        }
+        return new Stack<Integer>();
+    }
+
+    public Stack<Integer> cycleP(int s, Numbering num,Stack<Integer> p){
+        num.setColor(s, "rouge");
+        p.push(s);
+        for(int t=0; t<n; t++){
+            if(adjmat[s][t]!= 0.0){
+                if(num.getColors()[t] == "noir"){
+                    p=cycleP(t, num,p);
+                }
+                if(num.getColors()[t] == "rouge"){
+                    return p;
+                }
+            }
+        }
+        num.setColor(s, "bleu");
+        return new Stack<Integer>();
     }
 }

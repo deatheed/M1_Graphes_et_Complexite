@@ -321,4 +321,53 @@ public class GraphL4A {
 
         return true;
     }
+
+        /**
+     * TP2 - Exercice 2 : Détecte la présence d'un cycle dans le graphe Utilise
+     * un système de couleurs (noir/rouge/bleu) pour détecter les back arcs
+     *
+     * @return true si le graphe contient un cycle, false sinon
+     *
+     * Complexité : O(n²) où n est le nombre de sommets
+     */
+    public boolean DFSCycle() {
+        Numbering num = new Numbering(n);
+        for (int s = 0; s < n; s++) {
+            if ("noir".equals(num.getColors()[s])) {
+                if (cycle(s, num)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * TP2 - Fonction auxiliaire récursive pour détecter un cycle
+     *
+     * @param s Sommet courant
+     * @param num Objet Numbering pour stocker les couleurs
+     * @return true si un cycle est détecté, false sinon
+     *
+     * Complexité : O(n²) où n est le nombre de sommets
+     */
+    public boolean cycle(int s, Numbering num) {
+        num.setColor(s, "rouge");
+        Node4A current = this.adjlist[s];
+            while (current != null) {
+                int successor = current.getVal();
+                // Arc inverse: de successor vers i
+                if ("noir".equals(num.getColors()[successor])) {
+                    if (cycle(successor, num)) { // CORRECTION: Ajouter if et retourner
+                        return true;
+                    }
+                }
+                if ("rouge".equals(num.getColors()[successor])) {
+                    return true;
+                }
+                current = current.getNext();
+            }
+        num.setColor(s, "bleu");
+        return false;
+    }
 }

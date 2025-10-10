@@ -323,7 +323,7 @@ public class GraphL4A {
         return true;
     }
 
-        /**
+    /**
      * TP2 - Exercice 2 : Détecte la présence d'un cycle dans le graphe Utilise
      * un système de couleurs (noir/rouge/bleu) pour détecter les back arcs
      *
@@ -355,19 +355,19 @@ public class GraphL4A {
     public boolean cycle(int s, Numbering num) {
         num.setColor(s, "rouge");
         Node4A current = this.adjlist[s];
-            while (current != null) {
-                int successor = current.getVal();
-                // Arc inverse: de successor vers i
-                if ("noir".equals(num.getColors()[successor])) {
-                    if (cycle(successor, num)) { // CORRECTION: Ajouter if et retourner
-                        return true;
-                    }
-                }
-                if ("rouge".equals(num.getColors()[successor])) {
+        while (current != null) {
+            int successor = current.getVal();
+            // Arc inverse: de successor vers i
+            if ("noir".equals(num.getColors()[successor])) {
+                if (cycle(successor, num)) { // CORRECTION: Ajouter if et retourner
                     return true;
                 }
-                current = current.getNext();
             }
+            if ("rouge".equals(num.getColors()[successor])) {
+                return true;
+            }
+            current = current.getNext();
+        }
         num.setColor(s, "bleu");
         return false;
     }
@@ -399,24 +399,24 @@ public class GraphL4A {
         num.setColor(s, "rouge");
         p.push(s);
         Node4A current = this.adjlist[s];
-            while (current != null) {
-                int successor = current.getVal();
-                // Arc inverse: de successor vers i
-                if ("noir".equals(num.getColors()[successor])) {
-                    if (cycle(successor, num)) { // CORRECTION: Ajouter if et retourner
-                        Stack<Integer> result = cycleP(s, num, p);
-                        if (!result.isEmpty()) {
-                            return result;
-                        }
+        while (current != null) {
+            int successor = current.getVal();
+            // Arc inverse: de successor vers i
+            if ("noir".equals(num.getColors()[successor])) {
+                if (cycle(successor, num)) { // CORRECTION: Ajouter if et retourner
+                    Stack<Integer> result = cycleP(successor, num, p);
+                    if (!result.isEmpty()) {
+                        return result;
                     }
                 }
-                if ("rouge".equals(num.getColors()[successor])) {
-                    return p;
-                }
-                current = current.getNext();
             }
+            if ("rouge".equals(num.getColors()[successor])) {
+                return p;
+            }
+            current = current.getNext();
+        }
         num.setColor(s, "bleu");
-        p.pop();
+        //p.pop();
         return new Stack<Integer>();
     }
 }

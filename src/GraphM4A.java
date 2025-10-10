@@ -404,7 +404,9 @@ public class GraphM4A {
         Numbering num = new Numbering(n);
         Stack<Integer> p = new Stack<Integer>();
         for (int s = 0; s < n; s++) {
+            System.out.println(s);
             if ("noir".equals(num.getColors()[s])) {
+                System.out.println("Noir\n");
                 Stack<Integer> result = cycleP(s, num, p);
                 if (!result.isEmpty()) {
                     return result;
@@ -426,22 +428,26 @@ public class GraphM4A {
      */
     public Stack<Integer> cycleP(int s, Numbering num, Stack<Integer> p) {
         num.setColor(s, "rouge");
+        System.out.println("Rouge\n");
         p.push(s);
         for (int t = 0; t < n; t++) {
+            System.out.println(t);
             if (adjmat[s][t] != 0.0) {
                 if ("noir".equals(num.getColors()[t])) {
                     Stack<Integer> result = cycleP(t, num, p);
                     if (!result.isEmpty()) {
+                        System.out.println(t + "\\ " + s);
                         return result;
                     }
                 }
                 if ("rouge".equals(num.getColors()[t])) {
+                    System.out.println(t + "XXXXXXXXXXXXXX " + s);
                     return p;
                 }
             }
         }
         num.setColor(s, "bleu");
-        p.pop();
+        System.out.println("Bleu\n");
         return new Stack<Integer>();
     }
 

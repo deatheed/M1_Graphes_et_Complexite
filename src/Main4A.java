@@ -259,6 +259,43 @@ public class Main4A {
                 System.out.println("Test de chemin disponible uniquement pour les graphes non orientés");
             }
 
+            System.out.println("\n=== /////////////////////////////// ===");
+
+            // === NOUVELLES FONCTIONNALITES POUR GRAPHL4A ===
+            System.out.println("\n=== NOUVELLES FONCTIONNALITES POUR GRAPHL4A ===");
+
+            // TP2: Détection de cycle avec listes d'adjacence
+            System.out.println("\n--- TP2 Exercice 2: Détection de cycle (Listes d'adjacence) ---");
+            if (graphL.getWeighted() == 0) {
+                boolean hasCycleL = graphL.DFSCycle();
+                System.out.println("(Liste) Le graphe contient un cycle: " + (hasCycleL ? "OUI" : "NON"));
+                System.out.println("Note: Ce test utilise DFS avec coloration (noir/rouge/bleu)");
+            } else {
+                System.out.println("Détection de cycle actuellement disponible uniquement pour graphes non pondérés");
+            }
+
+            // TP2 EXERCICE 3: Affichage du cycle avec listes d'adjacence
+            System.out.println("\n--- TP2 Exercice 3: Affichage d'un cycle (Listes d'adjacence) ---");
+            if (graphL.getWeighted() == 0) {
+                Stack<Integer> cycleL = graphL.DFSCycleP();
+                if (!cycleL.isEmpty()) {
+                    System.out.print("(Liste) Cycle trouvé: ");
+                    Object[] cycleArrayL = cycleL.toArray();
+                    for (int i = 0; i < cycleArrayL.length; i++) {
+                        System.out.print(cycleArrayL[i]);
+                        if (i < cycleArrayL.length - 1) {
+                            System.out.print(" -> ");
+                        }
+                    }
+                    System.out.println();
+                    System.out.println("Taille du cycle: " + cycleL.size() + " sommets");
+                } else {
+                    System.out.println("(Liste) Aucun cycle trouvé");
+                }
+            } else {
+                System.out.println("Affichage de cycle actuellement disponible uniquement pour graphes non pondérés");
+            }
+
             System.out.println("\n=== FIN DES TESTS ===");
 
             sc.close();

@@ -1,5 +1,6 @@
 
 import java.util.Scanner;
+import java.util.Stack;
 
 public class GraphL4A {
 
@@ -369,5 +370,53 @@ public class GraphL4A {
             }
         num.setColor(s, "bleu");
         return false;
+    }
+
+    public Stack<Integer> DFSCycleP() {
+        Numbering num = new Numbering(n);
+        Stack<Integer> p = new Stack<Integer>();
+        for (int s = 0; s < n; s++) {
+            if ("noir".equals(num.getColors()[s])) {
+                Stack<Integer> result = cycleP(s, num, p);
+                if (!result.isEmpty()) {
+                    return result;
+                }
+            }
+        }
+        return new Stack<Integer>(); // Aucun cycle trouvé
+    }
+
+    /**
+     * TP2 - Fonction auxiliaire récursive pour détecter un cycle
+     *
+     * @param s Sommet courant
+     * @param num Objet Numbering pour stocker les couleurs
+     * @return true si un cycle est détecté, false sinon
+     *
+     * Complexité : O(n²) où n est le nombre de sommets
+     */
+    public Stack<Integer> cycleP(int s, Numbering num, Stack<Integer> p) {
+        num.setColor(s, "rouge");
+        p.push(s);
+        Node4A current = this.adjlist[s];
+            while (current != null) {
+                int successor = current.getVal();
+                // Arc inverse: de successor vers i
+                if ("noir".equals(num.getColors()[successor])) {
+                    if (cycle(successor, num)) { // CORRECTION: Ajouter if et retourner
+                        Stack<Integer> result = cycleP(s, num, p);
+                        if (!result.isEmpty()) {
+                            return result;
+                        }
+                    }
+                }
+                if ("rouge".equals(num.getColors()[successor])) {
+                    return p;
+                }
+                current = current.getNext();
+            }
+        num.setColor(s, "bleu");
+        p.pop();
+        return new Stack<Integer>();
     }
 }

@@ -2,6 +2,7 @@
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
+import java.util.Stack;
 
 public class Main4A {
 
@@ -21,22 +22,22 @@ public class Main4A {
                 Tools4A.printArray(degree);
             } else { //directed
                 TwoArrays4A pair = graphM.degrees();
-                int[] indegree = pair.in(); //the result of graphM.degrees() is a pair of arrays, indegree and outdegree
+                int[] indegree = pair.in();
                 int[] outdegree = pair.out();
-                System.out.println("(Matrix)Indegrees for vertices from 1 to " + indegree.length + " for the given digraph");
+                System.out.println("(Matrix) Indegrees for vertices from 1 to " + indegree.length + " for the given digraph");
                 Tools4A.printArray(indegree);
-                System.out.println("(Matrix)Outdegrees for vertices from 1 to " + indegree.length + " for the given digraph");
+                System.out.println("(Matrix) Outdegrees for vertices from 1 to " + indegree.length + " for the given digraph");
                 Tools4A.printArray(outdegree);
             }
 
             // EXERCICE 1: Transposition (Matrice -> Matrice)
-            System.out.println("\n--- Exercice 1: Transposition (Matrice -> Matrice) ---");
+            System.out.println("\n--- TP1 Exercice 1: Transposition (Matrice -> Matrice) ---");
             float[][] transposedMatrix = graphM.transposeToMatrix();
             System.out.println("Graphe transposé créé (matrice -> matrice)");
             System.out.println("Taille: " + transposedMatrix.length + "x" + transposedMatrix[0].length);
 
             // EXERCICE 1: Transposition (Matrice -> Liste)
-            System.out.println("\n--- Exercice 1: Transposition (Matrice -> Liste) ---");
+            System.out.println("\n--- TP1 Exercice 1: Transposition (Matrice -> Liste) ---");
             if (graphM.getWeighted() == 0) {
                 Node4A[] transposedAdjList = graphM.transposeToAdjList();
                 System.out.println("Graphe transposé créé (matrice -> liste non pondéré)");
@@ -48,9 +49,9 @@ public class Main4A {
             }
 
             // EXERCICE 2: Test d'existence de chemin (avec matrice)
-            System.out.println("\n--- Exercice 2: Test d'existence de chemin (Matrice) ---");
-            if (graphM.getType() == 0) { // Graphe non orienté seulement
-                int[] testPath = {1, 2, 3}; // Exemple de chemin à tester
+            System.out.println("\n--- TP1 Exercice 2: Test d'existence de chemin (Matrice) ---");
+            if (graphM.getType() == 0) {
+                int[] testPath = {1, 2, 3};
                 boolean pathExists = graphM.pathExists(testPath);
                 System.out.print("Test du chemin: ");
                 for (int i = 0; i < testPath.length; i++) {
@@ -64,23 +65,105 @@ public class Main4A {
                 System.out.println("Test de chemin disponible uniquement pour les graphes non orientés");
             }
 
+            // TP2 EXERCICE 1: DFS et reconnaissance des arcs
+            System.out.println("\n--- TP2 Exercice 1: Parcours DFS et reconnaissance des arcs ---");
+            Numbering num = graphM.recognizeArc();
+            System.out.println("Parcours DFS effectué avec numérotation:");
+            System.out.print("Numéros de découverte (d): ");
+            for (int i = 0; i < graphM.getN(); i++) {
+                System.out.print(num.getD()[i] + " ");
+            }
+            System.out.println();
+            System.out.print("Numéros de fin (f): ");
+            for (int i = 0; i < graphM.getN(); i++) {
+                System.out.print(num.getF()[i] + " ");
+            }
+            System.out.println();
+            System.out.println("Arcs tree/forward: " + num.get_tf_arc().size());
+            System.out.println("Arcs back: " + num.get_b_arc().size());
+            System.out.println("Arcs cross: " + num.get_c_arc().size());
+
+            // TP2 EXERCICE 2: Détection de cycle
+            System.out.println("\n--- TP2 Exercice 2: Détection de cycle ---");
+            boolean hasCycle = graphM.DFSCycle();
+            System.out.println("Le graphe contient un cycle: " + (hasCycle ? "OUI" : "NON"));
+
+            // TP2 EXERCICE 3: Affichage du cycle
+            System.out.println("\n--- TP2 Exercice 3: Affichage d'un cycle ---");
+            Stack<Integer> cycle = graphM.DFSCycleP();
+            if (!cycle.isEmpty()) {
+                System.out.print("Cycle trouvé: ");
+                Object[] cycleArray = cycle.toArray();
+                for (int i = 0; i < cycleArray.length; i++) {
+                    System.out.print(cycleArray[i]);
+                    if (i < cycleArray.length - 1) {
+                        System.out.print(" -> ");
+                    }
+                }
+                System.out.println();
+            } else {
+                System.out.println("Aucun cycle trouvé");
+            }
+
+            // NOUVELLES FONCTIONNALITÉS
+            // BFS - Parcours en largeur
+            System.out.println("\n=== NOUVELLES FONCTIONNALITES ===");
+            System.out.println("\n--- BFS: Parcours en largeur depuis le sommet 0 ---");
+            graphM.printBFS(0);
+
+            // Arbre BFS
+            System.out.println("\n--- BFS: Arbre de parcours depuis le sommet 0 ---");
+            int[] bfsTree = graphM.BFSTree(0);
+            System.out.println("Arbre BFS (parents):");
+            for (int i = 0; i < bfsTree.length; i++) {
+                if (bfsTree[i] == -1) {
+                    System.out.println("Sommet " + i + " : racine ou non atteignable");
+                } else {
+                    System.out.println("Sommet " + i + " -> parent: " + bfsTree[i]);
+                }
+            }
+
+            // Matrice d'incidence
+            System.out.println("\n--- Matrice d'incidence ---");
+            graphM.printIncidenceMatrix();
+
+            // Tri topologique (seulement pour graphes orientés)
+            System.out.println("\n--- Tri topologique ---");
+            if (graphM.getType() == 1) {
+                graphM.printTopologicalSort();
+            } else {
+                System.out.println("Le tri topologique n'est disponible que pour les graphes orientés");
+            }
+
+            // Composantes connexes
+            System.out.println("\n--- Composantes connexes ---");
+            graphM.printConnectedComponents();
+
+            // Test de connexité
+            System.out.println("\n--- Test de connexité ---");
+            boolean connected = graphM.isConnected();
+            System.out.println("Le graphe est connexe: " + (connected ? "OUI" : "NON"));
+            System.out.println("Nombre de composantes connexes: " + graphM.numberOfConnectedComponents());
+
             // If we choose the representation by adjacency lists
             sc = new Scanner(file);
             GraphL4A graphL = new GraphL4A(sc);
 
-            System.out.println("\n=== REPRESENTATION PAR LISTES D'ADJACENCE ===");
+            System.out.println("\n\n=== REPRESENTATION PAR LISTES D'ADJACENCE ===");
 
-            if (graphL.getType() == 0 && graphL.getWeighted() == 0) { //undirected and unweighted
+            if (graphL.getType() == 0 && graphL.getWeighted() == 0) {
                 int[] degree = graphL.degree();
                 System.out.println("(List) Degrees for vertices from 1 to " + degree.length + " for the given undirected graph");
                 Tools4A.printArray(degree);
             }
-            if (graphL.getType() == 0 && graphL.getWeighted() == 1) { //undirected and weighted
+
+            if (graphL.getType() == 0 && graphL.getWeighted() == 1) {
                 int[] degree = graphL.degreeW();
                 System.out.println("(List) Degrees for vertices from 1 to " + degree.length + " for the given undirected graph");
                 Tools4A.printArray(degree);
             }
-            if (graphL.getType() == 1 && graphL.getWeighted() == 0) { //directed and unweighted
+
+            if (graphL.getType() == 1 && graphL.getWeighted() == 0) {
                 TwoArrays4A pair = graphL.degrees();
                 int[] indegree = pair.in();
                 int[] outdegree = pair.out();
@@ -89,24 +172,23 @@ public class Main4A {
                 System.out.println("(List) Outdegrees for vertices from 1 to " + indegree.length + " for the given digraph");
                 Tools4A.printArray(outdegree);
             }
-            if (graphL.getType() == 1 && graphL.getWeighted() == 1) { //directed and unweighted
+
+            if (graphL.getType() == 1 && graphL.getWeighted() == 1) {
                 TwoArrays4A pair = graphL.degreesW();
                 int[] indegree = pair.in();
                 int[] outdegree = pair.out();
-                System.out.println("(List)Indegrees for vertices from 1 to " + indegree.length + " for the given digraph");
+                System.out.println("(List) Indegrees for vertices from 1 to " + indegree.length + " for the given digraph");
                 Tools4A.printArray(indegree);
-                System.out.println("(List)Outdegrees for vertices from 1 to " + indegree.length + " for the given digraph");
+                System.out.println("(List) Outdegrees for vertices from 1 to " + indegree.length + " for the given digraph");
                 Tools4A.printArray(outdegree);
             }
 
             // EXERCICE 1: Transposition (Liste -> Liste)
-            System.out.println("\n--- Exercice 1: Transposition (Liste -> Liste) ---");
+            System.out.println("\n--- TP1 Exercice 1: Transposition (Liste -> Liste) ---");
             if (graphL.getWeighted() == 0) {
                 Node4A[] transposedAdjList = graphL.transposeToAdjList();
                 System.out.println("Graphe transposé créé (liste -> liste non pondéré)");
                 System.out.println("Nombre de sommets: " + transposedAdjList.length);
-
-                // Afficher quelques informations sur le graphe transposé
                 System.out.println("Premiers voisins du graphe transposé:");
                 for (int i = 0; i < Math.min(3, transposedAdjList.length); i++) {
                     System.out.print("Sommet " + (i + 1) + " -> ");
@@ -125,8 +207,6 @@ public class Main4A {
                 WeightedNode4A[] transposedWeightedAdjList = graphL.transposeToWeightedAdjList();
                 System.out.println("Graphe transposé créé (liste -> liste pondéré)");
                 System.out.println("Nombre de sommets: " + transposedWeightedAdjList.length);
-
-                // Afficher quelques informations sur le graphe pondéré transposé
                 System.out.println("Premiers voisins du graphe transposé:");
                 for (int i = 0; i < Math.min(3, transposedWeightedAdjList.length); i++) {
                     System.out.print("Sommet " + (i + 1) + " -> ");
@@ -144,15 +224,15 @@ public class Main4A {
             }
 
             // EXERCICE 1: Transposition (Liste -> Matrice)
-            System.out.println("\n--- Exercice 1: Transposition (Liste -> Matrice) ---");
+            System.out.println("\n--- TP1 Exercice 1: Transposition (Liste -> Matrice) ---");
             float[][] transposedMatrixFromList = graphL.transposeToMatrix();
             System.out.println("Graphe transposé créé (liste -> matrice)");
             System.out.println("Taille: " + transposedMatrixFromList.length + "x" + transposedMatrixFromList[0].length);
 
             // EXERCICE 2: Test d'existence de chemin (avec listes)
-            System.out.println("\n--- Exercice 2: Test d'existence de chemin (Liste) ---");
-            if (graphL.getType() == 0) { // Graphe non orienté seulement
-                int[] testPath = {1, 2, 3}; // Exemple de chemin à tester
+            System.out.println("\n--- TP1 Exercice 2: Test d'existence de chemin (Liste) ---");
+            if (graphL.getType() == 0) {
+                int[] testPath = {1, 2, 3};
                 boolean pathExists = graphL.pathExists(testPath);
                 System.out.print("Test du chemin: ");
                 for (int i = 0; i < testPath.length; i++) {
@@ -163,7 +243,6 @@ public class Main4A {
                 }
                 System.out.println(" : " + (pathExists ? "EXISTE" : "N'EXISTE PAS"));
 
-                // Test avec un autre chemin si le graphe a assez de sommets
                 if (graphL.getN() >= 4) {
                     int[] testPath2 = {1, 3, 2, 4};
                     boolean pathExists2 = graphL.pathExists(testPath2);
@@ -179,6 +258,8 @@ public class Main4A {
             } else {
                 System.out.println("Test de chemin disponible uniquement pour les graphes non orientés");
             }
+
+            System.out.println("\n=== FIN DES TESTS ===");
 
             sc.close();
         } catch (Exception e) {

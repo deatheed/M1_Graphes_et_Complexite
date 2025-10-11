@@ -1,5 +1,5 @@
-5 undirected unweighted
-3 : 2, 3, 4, 5
+4 undirected unweighted
+1 : 2
 2 : 3
-4 : 3
-5 : 3
+3 : 1
+4 : 

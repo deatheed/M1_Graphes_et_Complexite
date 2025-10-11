@@ -401,22 +401,20 @@ public class GraphL4A {
         Node4A current = this.adjlist[s];
         while (current != null) {
             int successor = current.getVal();
-            // Arc inverse: de successor vers i
+
             if ("noir".equals(num.getColors()[successor])) {
-                if (cycle(successor, num)) { // CORRECTION: Ajouter if et retourner
-                    Stack<Integer> result = cycleP(successor, num, p);
-                    if (!result.isEmpty()) {
-                        return result;
-                    }
+                Stack<Integer> result = cycleP(successor, num, p); // ✅ Correction ici
+                if (!result.isEmpty()) {
+                    return result;
                 }
             }
             if ("rouge".equals(num.getColors()[successor])) {
+                p.push(successor);
                 return p;
             }
             current = current.getNext();
         }
         num.setColor(s, "bleu");
-        //p.pop();
         return new Stack<Integer>();
     }
 }

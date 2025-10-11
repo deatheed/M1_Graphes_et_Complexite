@@ -442,6 +442,7 @@ public class GraphM4A {
                 }
                 if ("rouge".equals(num.getColors()[t])) {
                     System.out.println(t + "XXXXXXXXXXXXXX " + s);
+                    p.push(t);
                     return p;
                 }
             }
